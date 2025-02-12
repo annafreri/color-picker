@@ -249,11 +249,16 @@ export const MapOfPeople: React.FC<MapOfPeopleProps> = ({ onCollision }) => {
     setDraggedCircle(null);
   };
 
+  const canvasHeight = window.innerHeight - 80 || 766;
+  const canvasWidth = canvasHeight / 2.16;
+
   return (
     <canvas
       ref={canvasRef}
-      width={390 * 0.8}
-      height={844 * 0.8}
+      // width={390 * 0.8}
+      // height={844 * 0.8}
+      width={canvasWidth}
+      height={canvasHeight}
       className="m-auto bg-white rounded-2xl touch-none"
       style={{
         background: 'url("/map.png")',
