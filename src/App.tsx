@@ -4,6 +4,7 @@ import { Person } from './types';
 import { Button } from './components/ui/button';
 import { Calendar } from 'lucide-react';
 
+
 function App() {
   const [collidingPeople, setCollidingPeople] = useState<Person[]>([]);
   const [hasCollided, setHasCollided] = useState(false);
@@ -41,7 +42,7 @@ function App() {
 
         {hasCollided && collidingPeople.length > 0 && (
           <div
-            style={{ width: canvasWidth - 24 }}
+            style={{ width: canvasWidth - 24, }}
             className="select-none absolute bottom-4 left-1/2 -translate-x-1/2 text-black bg-white pt-4 p-4 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4"
           >
             <div className='bg-zinc-200 w-12 h-1 rounded-full'></div>
@@ -90,6 +91,7 @@ function App() {
             </Button>
           </div>
         )}
+
       </div>
     </div>
   );
