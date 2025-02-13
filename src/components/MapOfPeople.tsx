@@ -1,11 +1,7 @@
+import initialPeople from '@/consts';
+import { Person } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 
-interface Person {
-  id: number;
-  x: number;
-  y: number;
-  name: string;
-}
 
 interface Circle extends Person {
   radius: number;
@@ -19,13 +15,7 @@ interface MapOfPeopleProps {
 }
 
 export const MapOfPeople: React.FC<MapOfPeopleProps> = ({ onCollision }) => {
-  const initialPeople: Person[] = [
-    { id: 1, x: 50, y: 450, name: "Dina" },
-    { id: 2, x: 150, y: 350, name: "Vana" },
-    { id: 3, x: 100, y: 250, name: "Petros" },
-    { id: 4, x: 200, y: 200, name: "Tasos" },
-    { id: 5, x: 200, y: 450, name: "Anna" }
-  ];
+
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<Map<number, HTMLImageElement>>(new Map());
@@ -37,7 +27,7 @@ export const MapOfPeople: React.FC<MapOfPeopleProps> = ({ onCollision }) => {
       img.src = `/person${id}.png`;
       imagesRef.current.set(id, img);
     });
-  }, [initialPeople]);
+  }, []);
 
   const [circles, setCircles] = useState<Circle[]>(
     initialPeople.map(person => ({
@@ -100,7 +90,8 @@ export const MapOfPeople: React.FC<MapOfPeopleProps> = ({ onCollision }) => {
                 id: circle1.id,
                 x: circle1.x,
                 y: circle1.y,
-                name: circle1.name
+                name: circle1.name,
+                price: circle1.price
               });
             }
             if (!collidingPeople.some(p => p.id === circle2.id)) {
@@ -108,7 +99,8 @@ export const MapOfPeople: React.FC<MapOfPeopleProps> = ({ onCollision }) => {
                 id: circle2.id,
                 x: circle2.x,
                 y: circle2.y,
-                name: circle2.name
+                name: circle2.name,
+                price: circle2.price
               });
             }
           }

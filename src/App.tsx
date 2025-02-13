@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MapOfPeople } from './components/MapOfPeople';
 import { Person } from './types';
 import { Button } from './components/ui/button';
-import { Calendar, MailOpen } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 function App() {
   const [collidingPeople, setCollidingPeople] = useState<Person[]>([]);
@@ -21,13 +21,44 @@ function App() {
   return (
     <div className="relative">
       <div className='m-8'>
+        {/* Only show price tooltip if there are colliding people */}
+        {collidingPeople.length > 0 && (
+          <div
+            className='bg-black text-white px-2 rounded-4xl absolute'
+            style={{
+              left: window.innerWidth / 2 - canvasWidth / 2 + collidingPeople[0].x,
+              top: collidingPeople[0].y
+            }}
+          >
+            {collidingPeople[0].price}
+          </div>
+        )}
+
         <MapOfPeople onCollision={handleCollision} />
-        {hasCollided && (
-          <div style={{ width: canvasWidth - 24 }} className="select-none absolute bottom-4 left-1/2 -translate-x-1/2 text-black bg-white pt-4 pb-8 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4">
-            <span className=' text-2xl tracking-tighter font-semibold'>Travel to {collidingPeople[1] ? collidingPeople[1].name : 'name'}</span>
+
+        {hasCollided && collidingPeople.length > 0 && (
+          <div
+            style={{ width: canvasWidth - 24 }}
+            className="select-none absolute bottom-4 left-1/2 -translate-x-1/2 text-black bg-white pt-4 pb-8 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4"
+          >
+            <span className='text-2xl tracking-tighter font-semibold'>
+              Travel to {collidingPeople[1]?.name || 'name'}
+            </span>
             <div className='flex flex-row mx-2 mb-4 w-full items-center justify-center'>
-              <img src={`/person${collidingPeople[1].id}.png`} className='size-12 border-1 border-white rounded-4xl' />
-              <img src={`/person${collidingPeople[0].id}.png`} className='size-12 -mx-2 border-2 border-white rounded-4xl' />
+              {collidingPeople[1] && (
+                <img
+                  src={`/person${collidingPeople[1].id}.png`}
+                  alt="Person 1"
+                  className='size-12 border-1 border-white rounded-4xl'
+                />
+              )}
+              {collidingPeople[0] && (
+                <img
+                  src={`/person${collidingPeople[0].id}.png`}
+                  alt="Person 2"
+                  className='size-12 -mx-2 border-2 border-white rounded-4xl'
+                />
+              )}
             </div>
             <Button className='text-md -mb-2'>
               <Calendar />
@@ -37,10 +68,10 @@ function App() {
               size={'lg'}
               variant="ghost"
               onClick={() => setHasCollided(false)}
-              className='text-sm text-zinc-400'>
+              className='text-sm text-zinc-400'
+            >
               Close
             </Button>
-
           </div>
         )}
       </div>
