@@ -36,31 +36,47 @@ function App() {
 
         <MapOfPeople onCollision={handleCollision} />
 
+
+        {/* modal */}
+
         {hasCollided && collidingPeople.length > 0 && (
           <div
             style={{ width: canvasWidth - 24 }}
-            className="select-none absolute bottom-4 left-1/2 -translate-x-1/2 text-black bg-white pt-4 pb-8 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4"
+            className="select-none absolute bottom-4 left-1/2 -translate-x-1/2 text-black bg-white pt-4 p-4 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4"
           >
-            <span className='text-2xl tracking-tighter font-semibold'>
-              Travel to {collidingPeople[1]?.name || 'name'}
-            </span>
-            <div className='flex flex-row mx-2 mb-4 w-full items-center justify-center'>
-              {collidingPeople[1] && (
-                <img
-                  src={`/person${collidingPeople[1].id}.png`}
-                  alt="Person 1"
-                  className='size-12 border-1 border-white rounded-4xl'
-                />
-              )}
-              {collidingPeople[0] && (
-                <img
-                  src={`/person${collidingPeople[0].id}.png`}
-                  alt="Person 2"
-                  className='size-12 -mx-2 border-2 border-white rounded-4xl'
-                />
-              )}
+            <div className='bg-zinc-200 w-12 h-1 rounded-full'></div>
+
+            <div className='flex flex-col gap-0 items-center'>
+              {/* images */}
+              <div className='flex flex-row mx-2 pb-2 w-full items-center justify-center'>
+                {collidingPeople[1] && (
+                  <img
+                    src={`/person${collidingPeople[1].id}.png`}
+                    alt="Person 1"
+                    className='size-12 border-1 border-white rounded-4xl'
+                  />
+                )}
+                {collidingPeople[0] && (
+                  <img
+                    src={`/person${collidingPeople[0].id}.png`}
+                    alt="Person 2"
+                    className='size-12 -mx-2 border-2 border-white rounded-4xl'
+                  />
+                )}
+              </div>
+              <span className='text-2xl tracking-tighter font-semibold'>
+                Travel to {collidingPeople[1]?.name || 'name'}
+              </span>
+              <span className='text-zinc-400 text-sm'>From 59€</span>
             </div>
-            <Button className='text-md -mb-2'>
+
+
+
+            <Button
+              className=' -mb-2'
+              variant="default"
+              onClick={() => setHasCollided(false)}
+            >
               <Calendar />
               Pick dates
             </Button>
