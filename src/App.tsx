@@ -22,7 +22,7 @@ function App() {
     <div className="relative">
       <div className='m-8'>
         {/* Only show price tooltip if there are colliding people */}
-        {collidingPeople.length > 0 && (
+        {/* {collidingPeople.length > 0 && (
           <div
             className='bg-black text-white px-2 rounded-4xl absolute'
             style={{
@@ -32,7 +32,7 @@ function App() {
           >
             {collidingPeople[0].price}
           </div>
-        )}
+        )} */}
 
         <MapOfPeople onCollision={handleCollision} />
 
