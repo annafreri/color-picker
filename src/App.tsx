@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MapOfPeople } from './components/MapOfPeople';
 import { Person } from './types';
 import { Button } from './components/ui/button';
-import { Calendar } from 'lucide-react';
+import { TicketsPlane } from 'lucide-react';
 
 
 function App() {
@@ -65,7 +65,7 @@ function App() {
                   />
                 )}
               </div>
-              <span className='text-2xl tracking-tighter font-semibold'>
+              <span className='text-xl tracking-tighter font-semibold'>
                 Travel to {collidingPeople[1]?.name || 'name'}
               </span>
               <span className='text-zinc-400 text-sm'>From 59€</span>
@@ -77,12 +77,13 @@ function App() {
               className=' -mb-2'
               variant="default"
               onClick={() => setHasCollided(false)}
+              size={'lg'}
             >
-              <Calendar />
-              Pick dates
+              <TicketsPlane />
+              Plan your trip
             </Button>
             <Button
-              size={'lg'}
+              size={'sm'}
               variant="ghost"
               onClick={() => setHasCollided(false)}
               className='text-sm text-zinc-400'
