@@ -1,99 +1,142 @@
-import { useState } from 'react';
-import { MapOfPeople } from './components/MapOfPeople';
-import { Person } from './types';
-import { Button } from './components/ui/button';
-import { TicketsPlane } from 'lucide-react';
+import { Info, PaintBucket } from "lucide-react";
+import UserVideo from "./components/UserVideo";
+import { useRef, useState } from "react";
 
+// RGB to Hex conversion function
+const rgbToHex = (r: number, g: number, b: number): string => {
+  return '#' + [r, g, b]
+    .map(x => x.toString(16).padStart(2, '0'))
+    .join('');
+};
 
 function App() {
-  const [collidingPeople, setCollidingPeople] = useState<Person[]>([]);
-  const [hasCollided, setHasCollided] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const previewRef = useRef<HTMLCanvasElement | null>(null);
+  const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
+  const [videoRect, setVideoRect] = useState<DOMRect | null>(null);
+  const [colors, setColors] = useState<{ r: number; g: number; b: number; } | null>(null);
 
-  const canvasHeight = window.innerHeight - 80 || 766;
-  const canvasWidth = canvasHeight / 2.16;
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (canvasRef.current && videoEl && previewRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
 
-  const handleCollision = (people: Person[]) => {
-    if (people.length > 0) {
-      setCollidingPeople(people);
-      setHasCollided(true);
+      // Get canvas display size from its CSS
+      const rect = canvasRef.current.getBoundingClientRect();
+
+      // Update canvas dimensions to match display size
+      previewRef.current.width = rect.width;
+      previewRef.current.height = rect.height;
+
+      // Get precise mouse coordinates
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // For color picking, we need to scale coordinates back to video dimensions
+      const scaleX = videoEl.videoWidth / rect.width;
+      const scaleY = videoEl.videoHeight / rect.height;
+
+      // Draw just a 1x1 pixel area from the video at the scaled coordinates
+      ctx?.drawImage(
+        videoEl,
+        x * scaleX, y * scaleY, 1, 1,
+        0, 0, 1, 1
+      );
+
+      // Get the pixel data
+      const imageData = ctx?.getImageData(0, 0, 1, 1);
+      setColors({
+        r: imageData?.data[0] || 0,
+        g: imageData?.data[1] || 0,
+        b: imageData?.data[2] || 0
+      });
+
+      // Draw preview at cursor position
+      const previewCtx = previewRef.current.getContext('2d');
+      if (previewCtx) {
+        previewCtx.clearRect(0, 0, rect.width, rect.height);
+
+        // Draw magnification circle
+        previewCtx.beginPath();
+        previewCtx.arc(x, y, 20, 0, Math.PI * 2);
+        previewCtx.strokeStyle = 'white';
+        previewCtx.lineWidth = 2;
+        previewCtx.stroke();
+
+        // Draw crosshair
+        previewCtx.beginPath();
+        previewCtx.moveTo(x - 10, y);
+        previewCtx.lineTo(x + 10, y);
+        previewCtx.moveTo(x, y - 10);
+        previewCtx.lineTo(x, y + 10);
+        previewCtx.strokeStyle = 'black';
+        previewCtx.lineWidth = 1;
+        previewCtx.stroke();
+      }
     }
   };
 
+  // Update the video ready handler
+  const handleVideoReady = (video: HTMLVideoElement, rect: DOMRect) => {
+    setVideoEl(video);
+    setVideoRect(rect);
+  };
+
   return (
-    <div className="relative">
-      <div className='m-8'>
-        {/* Only show price tooltip if there are colliding people */}
-        {/* {collidingPeople.length > 0 && (
-          <div
-            className='bg-black text-white px-2 rounded-4xl absolute'
-            style={{
-              left: window.innerWidth / 2 - canvasWidth / 2 + collidingPeople[0].x,
-              top: collidingPeople[0].y
-            }}
-          >
-            {collidingPeople[0].price}
-          </div>
-        )} */}
+    <div className="sm:w-1/2 md:w-1/3 h-screen bg-zinc-900 mx-8 md:mx-auto my-8 rounded-2xl flex flex-col gap-6 px-8 py-6 text-zinc-400">
+      <div className="flex justify-between items-center">
 
-        <MapOfPeople onCollision={handleCollision} />
+        <div className="flex flex-row gap-3 items-center">
+          <PaintBucket />
+          <h1 className="font-semibold text-2xl">Color picker</h1>
+        </div>
 
-
-        {/* modal */}
-
-        {hasCollided && collidingPeople.length > 0 && (
-          <div
-            style={{ width: canvasWidth - 24, }}
-            className="select-none absolute bottom-4 left-1/2 -translate-x-1/2 text-black bg-white pt-4 p-4 rounded-lg shadow-lg flex flex-col items-center justify-center gap-4"
-          >
-            <div className='bg-zinc-200 w-12 h-1 rounded-full'></div>
-
-            <div className='flex flex-col gap-0 items-center'>
-              {/* images */}
-              <div className='flex flex-row mx-2 pb-2 w-full items-center justify-center'>
-                {collidingPeople[1] && (
-                  <img
-                    src={`/person${collidingPeople[1].id}.png`}
-                    alt="Person 1"
-                    className='size-12 border-1 border-white rounded-4xl'
-                  />
-                )}
-                {collidingPeople[0] && (
-                  <img
-                    src={`/person${collidingPeople[0].id}.png`}
-                    alt="Person 2"
-                    className='size-12 -mx-2 border-2 border-white rounded-4xl'
-                  />
-                )}
-              </div>
-              <span className='text-xl tracking-tighter font-semibold'>
-                Travel to {collidingPeople[1]?.name || 'name'}
-              </span>
-              <span className='text-zinc-400 text-sm'>From 59€</span>
-            </div>
-
-
-
-            <Button
-              className=' -mb-2'
-              variant="default"
-              onClick={() => setHasCollided(false)}
-              size={'lg'}
-            >
-              <TicketsPlane />
-              Plan your trip
-            </Button>
-            <Button
-              size={'sm'}
-              variant="ghost"
-              onClick={() => setHasCollided(false)}
-              className='text-sm text-zinc-400'
-            >
-              Close
-            </Button>
-          </div>
-        )}
+        <Info />
 
       </div>
+
+      <div className="relative">
+        <UserVideo onVideoReady={handleVideoReady} />
+
+
+        {/* Hidden canvas for color picking */}
+        <canvas
+          ref={canvasRef}
+          width={videoRect?.width || 1}
+          height={videoRect?.height || 1}
+          className="absolute top-0 left-0 w-full h-80 cursor-crosshair"
+          style={{ opacity: 0 }}
+          onMouseMove={handleMouseMove}
+        />
+
+        {/* Visible canvas for preview */}
+        <canvas
+          ref={previewRef}
+          width={videoRect?.width || 300}
+          height={videoRect?.height || 150}
+          className="absolute top-0 left-0 w-full h-80 pointer-events-none"
+        />
+
+      </div>
+
+      {colors && (
+
+        <div className="flex items-center gap-8 text-zinc-500">
+          <div
+            className="w-12 h-12 rounded-lg border"
+            style={{
+              backgroundColor: `rgb(${colors.r}, ${colors.g}, ${colors.b})`
+            }}
+          />
+          <div>
+            <p className="font-mono">
+              RGB: {colors.r}, {colors.g}, {colors.b}
+            </p>
+            <p className="font-mono">
+              HEX: {rgbToHex(colors.r, colors.g, colors.b)}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
