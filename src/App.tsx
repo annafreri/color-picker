@@ -101,7 +101,7 @@ function App() {
 
           <div className="flex flex-row gap-3 items-center">
             <PaintBucket />
-            <h1 className="font-semibold text-2xl">Color picker</h1>
+            <h1 className="font-semibold text-2xl">Life to hex</h1>
           </div>
 
           <Info />
