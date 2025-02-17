@@ -27,7 +27,7 @@ export default function UserVideo({ onVideoReady }: UserVideoProps) {
 
   return (
     <video
-      className="w-full h-80 bg-zinc-300 rounded-2xl"
+      className="w-full h-50 bg-zinc-300 rounded-2xl"
       ref={videoRef}
     />
   )
