@@ -161,7 +161,7 @@ function App() {
               </div>
               <h2 className="mt-5">Your palette</h2>
               <div
-                className="flex flex-wrap mt-6 text-zinc-600 font-mono">
+                className="flex flex-wrap mt-6 gap-2 text-zinc-600 font-mono">
 
                 {
                   userColors && userColors.map((color, index) => {
@@ -169,7 +169,7 @@ function App() {
                     return (
                       <div
                         key={`${index} +${color.r}  `}
-                        className="flex flex-row gap-2 items-center w-1/3 mb-2 border-1 border-zinc-800 hover:bg-zinc-800 rounded-full px-2 py-1 transition-all"
+                        className="cursor-pointer flex grow flex-row gap-2 items-center border-1 border-zinc-800 hover:bg-zinc-800 rounded-full px-2 py-1 transition-all"
                       >
                         <div
                           className="size-4 rounded-full"
