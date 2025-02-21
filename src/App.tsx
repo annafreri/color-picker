@@ -2,6 +2,9 @@ import { Copy, Info, PaintBucket } from "lucide-react";
 import UserVideo from "./components/UserVideo";
 import { useRef, useState } from "react";
 import { Button } from "./components/ui/button";
+import ColorPalette from "./components/ColorPalette";
+import { Color } from "./types";
+import EmptyState from "./components/EmptyState";
 
 // RGB to Hex conversion function
 const rgbToHex = (r: number, g: number, b: number): string => {
@@ -10,17 +13,15 @@ const rgbToHex = (r: number, g: number, b: number): string => {
     .join('');
 };
 
-type color = Record<string, number>
-
 function App() {
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewRef = useRef<HTMLCanvasElement | null>(null);
 
   const [videoEl, setVideoEl] = useState<HTMLVideoElement | null>(null);
   const [videoRect, setVideoRect] = useState<DOMRect | null>(null);
-  const [color, setcolor] = useState<color | null>(null);
-  const [userColors, setUserColors] = useState<color[] | null>(null);
+
+  const [color, setcolor] = useState<Color | null>(null);
+  const [userColors, setUserColors] = useState<Color[] | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (canvasRef.current && videoEl && previewRef.current) {
@@ -95,22 +96,21 @@ function App() {
   const hexColor = rgbToHex(color?.r ?? 0, color?.g ?? 0, color?.b ?? 0)
 
   return (
-    <>
-      <div className="sm:w-1/2 md:w-1/3 h-full bg-zinc-900 mx-8 md:mx-auto my-8 rounded-2xl flex flex-col gap-6 px-8 py-6 text-zinc-400">
-        <div className="flex justify-between items-center">
+    <div className="sm:w-1/2 md:w-1/3 h-full min-h-screen bg-zinc-900 mx-8 md:mx-auto my-8 rounded-2xl flex flex-col gap-6 px-8 py-6 text-zinc-400">
 
-          <div className="flex flex-row gap-3 items-center">
-            <PaintBucket />
-            <h1 className="font-semibold text-2xl">Life to hex</h1>
-          </div>
-
-          <Info />
-
+      {/* header */}
+      <div className="flex justify-between items-center">
+        <div className="flex flex-row gap-3 items-center">
+          <PaintBucket />
+          <h1 className="font-semibold text-2xl">Life to hex</h1>
         </div>
+        <Info />
+      </div>
 
-        <div className="relative">
+      <div className="flex flex-row gap-4 w-full">
+        <div className="relative w-full">
+
           <UserVideo onVideoReady={handleVideoReady} />
-
 
           {/* Hidden canvas for color picking */}
           <canvas
@@ -130,67 +130,43 @@ function App() {
             height={videoRect?.height || 150}
             className="absolute top-0 left-0 w-full h-50 pointer-events-none"
           />
-
         </div>
 
+        {/* sidebar */}
         {color && (
-          <div className="flex flex-col w-full gap-8 text-zinc-500">
+          <div className=" flex flex-col gap-4 items-center w-12 rounded-2xl">
 
-
-            <div>
-              <div className="flex flex-row gap-4 items-center">
-                <div
-                  className="w-9 h-9 rounded-lg border"
-                  style={{
-                    backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})`
-                  }}
-                />
-                <div className="block">
-                  {/* <p className="font-mono">
-                    RGB: {color.r}, {color.g}, {color.b}
-                  </p> */}
-                  <p
-                    className="font-mono text-4xl"
-                  >
-                    {hexColor}
-                  </p>
-                </div>
-                <Button onClick={() => { navigator.clipboard.writeText(hexColor) }} >
-                  <Copy />
-                </Button>
-              </div>
-              <h2 className="mt-5">Your palette</h2>
+            <div className="flex flex-col gap-4">
               <div
-                className="flex flex-wrap mt-6 gap-2 text-zinc-600 font-mono">
-
-                {
-                  userColors && userColors.map((color, index) => {
-                    const hexCode = rgbToHex(color?.r ?? 0, color?.g ?? 0, color?.b ?? 0)
-                    return (
-                      <div
-                        key={`${index} +${color.r}  `}
-                        className="cursor-pointer flex grow flex-row gap-2 items-center border-1 border-zinc-800 hover:bg-zinc-800 rounded-full px-2 py-1 transition-all"
-                      >
-                        <div
-                          className="size-4 rounded-full"
-                          style={{ backgroundColor: hexCode }}>
-                        </div>
-                        <p className="text-sm">{hexCode}</p>
-                      </div>
-                    )
-                  })
-                }
-              </div>
+                className="w-10 h-10 rounded-lg border"
+                style={{
+                  backgroundColor: hexColor
+                }}
+              />
             </div>
 
-
-
+            <Button
+              className='bg-zinc-800 hover:bg-zinc-700 size-10 cursor-pointer'
+              onClick={() => { navigator.clipboard.writeText(hexColor) }}
+            >
+              <Copy />
+            </Button>
           </div>
         )}
       </div>
 
+      {userColors && userColors?.length > 0 && (
+        <ColorPalette
+          userColors={userColors ?? []}
+        />
+      )}
+      {
+        !userColors && (
+          <EmptyState />
+        )
+      }
 
-    </>
+    </div>
   );
 }
 

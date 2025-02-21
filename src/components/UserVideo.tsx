@@ -30,5 +30,5 @@ export default function UserVideo({ onVideoReady }: UserVideoProps) {
       className="w-full h-50 bg-zinc-300 rounded-2xl"
       ref={videoRef}
     />
-  )
+  );
 }
