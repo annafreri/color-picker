@@ -16,7 +16,7 @@ export default function ColorPalette(props: Props) {
         <div className="flex flex-col gap-4">
           <h2 className="mt-8 font-semibold text-lg">Your colors</h2>
           <div
-            className="flex flex-wrap gap-2 text-zinc-600 font-mono">
+            className="grid grid-cols-3 gap-2 text-zinc-600 font-mono">
 
             {
               userColors && userColors.map((color, index) => {

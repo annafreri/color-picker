@@ -91,76 +91,78 @@ function App() {
   const hexColor = rgbToHex(color?.r ?? 0, color?.g ?? 0, color?.b ?? 0)
 
   return (
-    <div className="sm:w-1/2 md:w-1/3 h-full min-h-screen bg-zinc-900 mx-8 md:mx-auto my-8 rounded-2xl flex flex-col gap-6 px-8 py-6 text-zinc-400">
+    <div className="w-full max-w-[500px] my-0 sm:my-8 mx-auto px-0 sm:px-8">
+      <div className="w-full h-full min-h-screen bg-zinc-900 rounded-2xl flex flex-col gap-6 px-8 py-6 text-zinc-400">
 
-      {/* header */}
-      <div className="flex justify-between items-center">
-        <div className="flex flex-row gap-3 items-center">
-          <PaintBucket />
-          <h1 className="font-semibold text-2xl">Life to hex</h1>
-        </div>
-        <Info />
-      </div>
-
-      <div className="flex flex-row gap-4 w-full">
-        <div className="relative w-full">
-
-          <UserVideo onVideoReady={handleVideoReady} />
-
-          {/* Hidden canvas for color picking */}
-          <canvas
-            ref={canvasRef}
-            width={videoRect?.width || 1}
-            height={videoRect?.height || 1}
-            className="absolute top-0 left-0 w-full h-50 cursor-crosshair"
-            style={{ opacity: 0 }}
-            onMouseMove={handleMouseMove}
-            onClick={onCanvasClick}
-          />
-
-          {/* Visible canvas for preview */}
-          <canvas
-            ref={previewRef}
-            width={videoRect?.width || 300}
-            height={videoRect?.height || 150}
-            className="absolute top-0 left-0 w-full h-50 pointer-events-none"
-          />
-        </div>
-
-        {/* sidebar */}
-        {color && (
-          <div className=" flex flex-col gap-4 items-center w-12 rounded-2xl">
-
-            <div className="flex flex-col gap-4">
-              <div
-                className="w-10 h-10 rounded-lg border"
-                style={{
-                  backgroundColor: hexColor
-                }}
-              />
-            </div>
-
-            <Button
-              className='bg-zinc-800 hover:bg-zinc-700 size-10 cursor-pointer'
-              onClick={() => { navigator.clipboard.writeText(hexColor) }}
-            >
-              <Copy />
-            </Button>
+        {/* header */}
+        <div className="flex justify-between items-center">
+          <div className="flex flex-row gap-3 items-center">
+            <PaintBucket />
+            <h1 className="font-semibold text-2xl">Life to hex</h1>
           </div>
+          <Info />
+        </div>
+
+        <div className="flex flex-row gap-4 w-full">
+          <div className="relative w-full">
+
+            <UserVideo onVideoReady={handleVideoReady} />
+
+            {/* Hidden canvas for color picking */}
+            <canvas
+              ref={canvasRef}
+              width={videoRect?.width || 1}
+              height={videoRect?.height || 1}
+              className="absolute top-0 left-0 w-full h-50 cursor-crosshair"
+              style={{ opacity: 0 }}
+              onMouseMove={handleMouseMove}
+              onClick={onCanvasClick}
+            />
+
+            {/* Visible canvas for preview */}
+            <canvas
+              ref={previewRef}
+              width={videoRect?.width || 300}
+              height={videoRect?.height || 150}
+              className="absolute top-0 left-0 w-full h-50 pointer-events-none"
+            />
+          </div>
+
+          {/* sidebar */}
+          {color && (
+            <div className=" flex flex-col gap-4 items-center w-12 rounded-2xl">
+
+              <div className="flex flex-col gap-4">
+                <div
+                  className="w-10 h-10 rounded-lg border"
+                  style={{
+                    backgroundColor: hexColor
+                  }}
+                />
+              </div>
+
+              <Button
+                className='bg-zinc-800 hover:bg-zinc-700 size-10 cursor-pointer'
+                onClick={() => { navigator.clipboard.writeText(hexColor) }}
+              >
+                <Copy />
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {userColors && userColors?.length > 0 && (
+          <ColorPalette
+            userColors={userColors ?? []}
+          />
         )}
+        {
+          !userColors && (
+            <EmptyState />
+          )
+        }
+
       </div>
-
-      {userColors && userColors?.length > 0 && (
-        <ColorPalette
-          userColors={userColors ?? []}
-        />
-      )}
-      {
-        !userColors && (
-          <EmptyState />
-        )
-      }
-
     </div>
   );
 }
