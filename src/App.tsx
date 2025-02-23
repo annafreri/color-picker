@@ -5,13 +5,8 @@ import { Button } from "./components/ui/button";
 import ColorPalette from "./components/ColorPalette";
 import { Color } from "./types";
 import EmptyState from "./components/EmptyState";
+import { rgbToHex } from "./utils";
 
-// RGB to Hex conversion function
-const rgbToHex = (r: number, g: number, b: number): string => {
-  return '#' + [r, g, b]
-    .map(x => x.toString(16).padStart(2, '0'))
-    .join('');
-};
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
