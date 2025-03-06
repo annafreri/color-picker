@@ -6,6 +6,9 @@ import ColorPalette from "./components/ColorPalette";
 import { Color } from "./types";
 import EmptyState from "./components/EmptyState";
 import { rgbToHex } from "./utils";
+import Test from "./components/Test";
+import AnimatedBox from "./components/AnimatedBox";
+import ClickAnimation from "./components/ClickAnimation";
 
 
 function App() {
@@ -92,6 +95,7 @@ function App() {
 
   return (
     <div className="w-full max-w-[500px] my-0 sm:my-8 mx-auto px-0 sm:px-8">
+
       <div className="w-full h-full min-h-screen bg-zinc-900 rounded-2xl flex flex-col gap-6 px-8 py-6 text-zinc-400">
 
         {/* header */}
@@ -105,7 +109,9 @@ function App() {
 
         <div className="flex flex-row gap-4 w-full">
           <div className="relative w-full">
-
+            <Test />
+            {/* <AnimatedBox /> */}
+            <ClickAnimation />
             <UserVideo onVideoReady={handleVideoReady} />
 
             {/* Hidden canvas for color picking */}
